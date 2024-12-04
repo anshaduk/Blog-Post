@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Blog Post List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function togglePosts() {
+            const allPosts = document.getElementById('all-posts');
+            const filteredPosts = document.getElementById('filtered-posts');
+            const toggleCheckbox = document.getElementById('toggle-checkbox');
+            const buttonLabel = document.getElementById('toggle-label');
+
+            const clientCountry = "{{ country|escapejs }}";
+
+            if (toggleCheckbox.checked) {
+                allPosts.classList.add('hidden');
+                filteredPosts.classList.remove('hidden');
+                buttonLabel.innerText = `Show All Posts`;
+            } else {
+                allPosts.classList.remove('hidden');
+                filteredPosts.classList.add('hidden');
+                buttonLabel.innerText = `Posts by Country (${clientCountry})`;
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50 font-sans leading-normal tracking-normal">
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Header -->
+        <div class="flex flex-col items-center text-center mb-8">
+            <h1 class="text-5xl font-extrabold text-gray-800 mb-4">Blog Posts</h1>
+            <div class="flex items-center space-x-4">
+                <span id="toggle-label" class="text-lg font-medium text-blue-700">Posts by Country</span>
+                <label for="toggle-checkbox" class="cursor-pointer">
+                    <input 
+                    id="toggle-checkbox"
+                    type="checkbox" 
+                    class="appearance-none w-[4em] h-[2em] bg-gradient-to-r from-blue-300 to-blue-600 rounded-full relative cursor-pointer transition-all duration-300 ease-in-out
+                    before:content-[''] before:absolute before:w-[1.5em] before:h-[1.5em] before:top-[0.25em] before:left-[0.25em] 
+                    before:bg-white before:rounded-full before:shadow-md before:transition-transform before:duration-300 ease-in-out
+                    checked:before:translate-x-[calc(100%-1.75em)]"
+                    onchange="togglePosts()"
+                />
+                </label>
+            </div>
+        </div>
+
+        <!-- All Posts Section -->
+        <div id="all-posts" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 justify-center">
+            {% for post in posts %}
+            <div class="relative bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div class="h-36 bg-gradient-to-br from-blue-400 to-purple-500"></div>
+                <div class="p-6">
+                    <h2 class="text-lg font-bold text-gray-800 mb-2">{{ post.title }}</h2>
+                    <p class="text-sm text-gray-600 mb-4 truncate">{{ post.content }}</p>
+                    <div class="flex justify-between items-center text-gray-500 text-xs">
+                        <span>{{ post.created_at }}</span>
+                        <span>{{ post.country }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Filtered Posts Section -->
+        <div id="filtered-posts" class="hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 justify-center">
+            {% for post in filtered_posts %}
+            <div class="relative bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                <div class="h-36 bg-gradient-to-br from-green-400 to-teal-500"></div>
+                <div class="p-6">
+                    <h2 class="text-lg font-bold text-gray-800 mb-2">{{ post.title }}</h2>
+                    <p class="text-sm text-gray-600 mb-4 truncate">{{ post.content }}</p>
+                    <div class="flex justify-between items-center text-gray-500 text-xs">
+                        <span>{{ post.created_at }}</span>
+                        <span>{{ post.country }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+
+</html>
